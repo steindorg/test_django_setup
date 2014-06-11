@@ -55,7 +55,7 @@ class NewVisitorTest(unittest.TestCase):  #1
 		
 		header_text = self.browser.find_element_by_tag_name('h1').text
 		
-		self.assertIN('To-do', header_text)
+		self.assertIn('Your To-Do list', header_text)
 		
 		# She is invited to enter a to-do item straight away
 		inputbox = self.browser.find_element_by_id('id_new_item')
@@ -71,13 +71,14 @@ class NewVisitorTest(unittest.TestCase):  #1
 
 		# When she hits enter, the page updates, and now the page lists
 		# "1: Buy peacock feathers" as an item in a to-do list
-		inputbox.send_keys(keys.Enter)
+		inputbox.send_keys(Keys.ENTER)
 
-		Table = self.browser.find_element_by_id('id_list_table')
+		table = self.browser.find_element_by_id('id_list_table')
 		rows = table.find_elements_by_tag_name('tr')
 		self.assertTrue(
 			# iterating through the table
-			any(row.text == '1: Buy peacock feathers' for row in rows)
+			any(row.text == '1: Buy peacock feathers' for row in rows),
+			"New to-do item did not appear in table"
 		)
 
 		self.fail('Finish the test!')  #6

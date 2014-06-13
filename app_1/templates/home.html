@@ -14,7 +14,9 @@
     		
     		<!--  passes variables from our Python view code into HTML templates />-->
     		<!--  'new_item_text': request.POST.get('item_text','yo yo yo yo yo'), />--> 
-    		<tr><td>1: {{ new_item_text }}</td></tr>
-		</table>
+    		{% for item in items %}
+                <tr><td>{{ forloop.counter }}: {{ item.text }}</td></tr>
+            {% endfor %}
+        </table>
     </body>
 </html>

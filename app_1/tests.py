@@ -73,103 +73,12 @@ class HomePageTest(TestCase):
 		self.assertEqual(found.func, home_page) # assert equal tekur 2 input, hvad á að gera 
 								 				# og hvernig á útkoman að vera.
  
-	def test_home_page_only_saves_items_when_necessery(self):
-		request = HttpRequest()
-		home_page(request)
-		self.assertEqual(Item.objects.count(), 0)
-
-
-	
 	def test_home_page_returns_correct_html(self):
-  		# We create an HttpRequest object, which is what Django 
-  		# will see when a user’s browser asks for a page.
-		request = HttpRequest() 
-		
-		# method : String containing the HTTP method used by the request ('GET' or 'POST')
-		request.method = 'POST'
-		
-		# POST: A QueryDict representing form values submitted using the HTTP POST method
-
-		request.POST['item_text'] = 'A new list item'
-
-		
-# 		This object is an instance of a class called HttpResponse.
-		# We pass it to our home_page view, which gives us a response
-		response = home_page(request)
-		
-		self.assertEqual(Item.objects.count(),1)
-		new_item = Item.objects.first()
-		print ( new_item.text )
-		self.assertEqual(new_item.text, 'A new list item')
-
-
-
-										# HttpResponse.content
-										# A bytestring representing the content, encoded from a Unicode object if necessary.
-										# We use .decode() to convert the response.content bytes into a Python unicode string, 
-										# which allows us to compare strings with strings, 
-										# instead of bytes with bytes as we did earlier.
-		#self.assertIn('A new list item', response.content.decode())
-		
-						# Django provides a shortcut function which largely automates the process: 
-						# render_to_string() in django.template.loader, 
-						# which loads a template, renders it and returns the resulting string: 
-						# The function takes one argument " The template name " which is the name of the template
-						# that should be loaded and rendered and two optional arguments 
-						# ---Second argument--- is a dictionary. A dictionary to be used as variables 
-						# and values for the template’s context. This can also be passed as the second positional argument.
-						# ---Third--- is Context_instance. An instance of Context or a subclass (e.g., an instance of RequestContext) 
-						# to use as the template’s context. This can also be passed as the third positional argument.
-		expected_html = render_to_string(
-			'home.html',
-			# New item text er python variable sem er declerað í töflu í htmlinu
-			# The render_to_string function takes, as its second parameter, a mapping of variable names to values. 
-			# We’re giving the template a variable named new_item_text, whose value is the expected item text from our POST request.
-			{'new_item_text': 'A new list item'}
-		)
-		
-
-		
-
-
-		# expected_html = render_to_string('home.html')
-		
-		# we have to use the b'' syntax to compare because response.content is rawbytes and not a
-		# python string which means that b '' converts whats there into a raw byte file 
-		# self.assertTrue(response.content.startswith(b'<html>'))  
-
-		# Now We use .decode() to convert the response.content bytes into a Python 
-		# unicode string, which allows us to compare strings with strings, 
-		# instead of bytes with bytes as we did earlier.
-		#self.assertEqual(response.content.decode(), expected_html) 
-
-        
-        
-		#self.assertIn(b'<title>To-Do lists</title>', response.content)  
-		#self.assertTrue(response.content.endswith(b'</html>'))
-
-
-	def test_home_page_can_save_a_POST_request(self):
 		request = HttpRequest()
-		request.method = 'POST'
-		request.POST['item_text'] = 'A new list item'
-
 		response = home_page(request)
-
-		self.assertEqual(Item.objects.count(), 1)
-		new_item = Item.objects.first()
-		self.assertEqual(new_item.text, 'A new list item')
-
-		
-	def test_home_page_redirects_after_post(self):
-		request = HttpRequest()
-		request.method = 'POST'
-		request.POST['item_text'] = 'A new list item'
-
-		response = home_page(request)
-
-		self.assertEqual(response.status_code, 302)
-		self.assertEqual(response['location'], '/lists/the-only-list-in-the-world/')
+		expected_html = render_to_string('home.html')
+		self.assertEqual(response.content.decode(), expected_html)
+	
 
 	
 class ListViewTest(TestCase):
@@ -191,6 +100,27 @@ class ListViewTest(TestCase):
 		response = self.client.get('/lists/the-only-list-in-the-world/')
 		# assertTemplateUsed is one of the more useful functions that the Django test client gives us. 
 		self.assertTemplateUsed(response, 'list.html')
+
+class NewListTest(TestCase):
+	
+	def test_saving_a_POST_request(self):
+		self.client.post(
+		# This is another place to pay attention to trailing slashes, incidentally. 
+		# It’s /new, with no trailing slash. The convention I’m using is that URLs without 
+		# a trailing slash are "action" URLs which modify the database.
+		'/lists/new',
+		data={'item_text': 'A new list item'}
+		)
+		self.assertEqual(Item.objects.count(), 1)
+		new_item = Item.objects.first()
+		self.assertEqual(new_item.text, 'A new list item')
+	
+	def test_redirects_after_post(self):
+		response = self.client.post(
+		'/lists/new',
+		data={'item_text': 'A new list item'}
+		)
+		self.assertRedirects(response, '/lists/the-only-list-in-the-world/')
 
 
 

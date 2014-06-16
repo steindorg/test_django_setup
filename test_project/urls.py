@@ -10,5 +10,6 @@ urlpatterns = patterns('',
 	url(r'^lists/the-only-list-in-the-world/$', 'app_1.views.view_list',
         name='view_list'
     ),
+    url(r'^lists/new$', 'app_1.views.new_list', name='new_list'),
     #url(r'^admin/', include(admin.site.urls)),
 )

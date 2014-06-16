@@ -7,11 +7,7 @@ from app_1.models import Item
 # search folders called templates in my apps directories then it builds an httpresponse based on the template. 
 
 def home_page(request):
-	if request.method == 'POST':
-		Item.objects.create(text=request.POST['item_text'])
-		return redirect('/lists/the-only-list-in-the-world/')
-	# Combines a given template with a given context dictionary and returns an HttpResponse 
-	# object with that rendered text.
+	
 	return render(request, 'home.html')
 	# return HttpResponse('<html><title>To-Do lists</title></html>')
 
@@ -19,3 +15,7 @@ def home_page(request):
 def view_list(request):
 	items = Item.objects.all()
 	return render(request, 'list.html', {'items': items})
+
+def new_list(request):
+    Item.objects.create(text=request.POST['item_text'])
+    return redirect('/lists/the-only-list-in-the-world/')

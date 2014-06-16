@@ -9,12 +9,13 @@ from app_1.models import Item
 def home_page(request):
 	if request.method == 'POST':
 		Item.objects.create(text=request.POST['item_text'])
-
-		return redirect('/')
-
-	
-	# notað til að skila lista objectum og til að gera lúppu í html sjá home.html
-	items = Item.objects.all()
-			# Combines a given template with a given context dictionary and returns an HttpResponse object with that rendered text.
-	return render(request, 'home.html', {'items': items})
+		return redirect('/lists/the-only-list-in-the-world/')
+	# Combines a given template with a given context dictionary and returns an HttpResponse 
+	# object with that rendered text.
+	return render(request, 'home.html')
 	# return HttpResponse('<html><title>To-Do lists</title></html>')
+
+
+def view_list(request):
+	items = Item.objects.all()
+	return render(request, 'list.html', {'items': items})

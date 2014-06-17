@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from app_1.models import Item
+from app_1.models import Item, List
 
 # Render function is a django function that takes a request as its first paramenter and 
 # the name of the template to render as its second parameter. Django will automatically 
@@ -17,5 +17,6 @@ def view_list(request):
 	return render(request, 'list.html', {'items': items})
 
 def new_list(request):
-    Item.objects.create(text=request.POST['item_text'])
-    return redirect('/lists/the-only-list-in-the-world/')
+	list_ = List.objects.create()
+	Item.objects.create(text=request.POST['item_text'], list=list_)
+	return redirect('/lists/the-only-list-in-the-world/')

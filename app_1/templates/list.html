@@ -4,17 +4,21 @@
     </head>
     <body>
         <h1>Your To-Do list</h1>
-    	<!-- <input id="id_new_item" placeholder ="Enter a to-do item" />-->
-    	<form method="POST" action="/lists/new">
-    		<input name="item_text" id="id_new_item" placeholder ="Enter a to-do item" />
+    	<!-- Action is what happens in other words where the site
+        directs the user
+         after the user has done the post request />-->
+    	<form method="POST" action="/lists/{{ list.id }}/add_item">
+    		<!-- <input id="id_new_item" placeholder ="Enter a to-do item" />-->
+            <input name="item_text" id="id_new_item" placeholder ="Enter a to-do item" />
     		{% csrf_token %}
     	</form>
     	
     	<table id="id_list_table">
     		
     		<!--  passes variables from our Python view code into HTML templates />-->
-    		<!--  'new_item_text': request.POST.get('item_text','yo yo yo yo yo'), />--> 
-    		{% for item in items %}
+    		
+    		<!-- .item_set is called a "reverse lookup"—it’s one of Django’s incredibly useful bits of ORM that lets you look up an object’s related items from a different table…/>--> 
+            {% for item in list.item_set.all %}
                 <tr><td>{{ forloop.counter }}: {{ item.text }}</td></tr>
             {% endfor %}
         </table>

@@ -61,9 +61,7 @@ class NewVisitorTest(LiveServerTestCase):  #1
 			inputbox.location['x'] + inputbox.size['width'] / 2,
 			512,
 			delta=5
-
-
-			)
+		)
 	
   		# She starts a new list and sees the input is nicely
     	# centered there too
